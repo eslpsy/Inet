@@ -20,7 +20,7 @@ int main()
     inet::InetAddress listenAddr(8080);
     inet::EventLoop loop;
     inet::Acceptor acceptor(&loop, listenAddr);
-    acceptor.setNewConnecionCallback(newConnection);
+    acceptor.setNewConnectionCallback(newConnection);
     acceptor.listen();
 
     loop.loop();

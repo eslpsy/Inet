@@ -1,7 +1,8 @@
-all: test01 test02 test03 test04 test05 test06 test07
+all: test01 test02 test03 test04 test05 test06 test07 test08
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
-		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o
+		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
+            TcpConnection.o TcpServer.o
 
 FLAGS = -std=c++11 -pthread
 
@@ -25,6 +26,9 @@ test06 : $(objects) test06.cpp
 
 test07 : $(obejcts) test07.cpp
 	clang++ $(objects) $(FLAGS) test07.cpp -o test07
+
+test08: $(objects) test08.cpp
+	clang++ $(objects) $(FLAGS) test08.cpp -o test08
 
 Thread.o : ../../src/base/Thread.h ../../src/base/Thread.cpp \
 	../../src/base/Noncopyable.h ../../src/base/Atomic.h ../../src/base/Thread.cpp
@@ -70,5 +74,11 @@ InetAddress.o: ../../src/net/InetAddress.h ../../src/net/InetAddress.cpp
 Acceptor.o: ../../src/net/Acceptor.h ../../src/net/Acceptor.cpp
 	clang++ $(FLAGS) -c ../../src/net/Acceptor.cpp
 
+TcpConnection.o: ../../src/net/TcpConnection.h ../../src/net/TcpConnection.cpp
+	clang++ $(FLAGS) -c ../../src/net/TcpConnection.cpp
+
+TcpServer.o: ../../src/net/TcpServer.h ../../src/net/TcpServer.cpp
+	clang++ $(FLAGS) -c ../../src/net/TcpServer.cpp
+
 clean :
-	rm test01 test02 test03 test04 test05 test06 test07 $(objects)
+	rm test01 test02 test03 test04 test05 test06 test07 test08 $(objects)

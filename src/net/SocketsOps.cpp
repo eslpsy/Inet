@@ -68,7 +68,7 @@ int sockets::accept(int sockfd, struct sockaddr_in* addr)
         int saveErrno = errno;
         switch(saveErrno)
         {
-            case EAGAIN:
+                case EAGAIN:
             case ECONNABORTED:
             case EINTR:
             case EPROTO:
@@ -116,4 +116,14 @@ void sockets::fromHostPort(const char *ip, uint16_t port, struct sockaddr_in* ad
     {
         abort();
     }
+}
+
+struct sockaddr_in sockets::getLocalAddress(int sockfd)
+{
+    struct sockaddr_in localaddr;
+    bzero(&localaddr, sizeof(localaddr));
+    socklen_t addrlen = sizeof(localaddr);
+    if(::getsockname(sockfd, sockaddr_cast(&localaddr), &addrlen) < 0)
+        abort();
+    return localaddr;
 }
