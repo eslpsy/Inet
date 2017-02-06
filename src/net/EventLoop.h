@@ -33,6 +33,8 @@ namespace inet
 
             void updateChannel(Channel* channel);
 
+            void removeChannel(Channel* channel);
+
             void assertInLoopThread()
             {
                 if(!isInLoopThread())

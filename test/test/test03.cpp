@@ -1,12 +1,13 @@
 #include "../../src/net/Channel.h"
 #include "../../src/net/EventLoop.h"
+#include "../../src/base/Timestamp.h"
 #include <stdio.h>
 #include <sys/timerfd.h>
 #include <strings.h>
 
 inet::EventLoop* g_loop;
 
-void timeout()
+void timeout(inet::Timestamp now)
 {
     printf("Timeout!\n");
     g_loop->quit();

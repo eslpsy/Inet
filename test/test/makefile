@@ -2,7 +2,7 @@ all: test01 test02 test03 test04 test05 test06 test07 test08
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
-            TcpConnection.o TcpServer.o
+            TcpConnection.o TcpServer.o Buffer.o
 
 FLAGS = -std=c++11 -pthread
 
@@ -79,6 +79,9 @@ TcpConnection.o: ../../src/net/TcpConnection.h ../../src/net/TcpConnection.cpp
 
 TcpServer.o: ../../src/net/TcpServer.h ../../src/net/TcpServer.cpp
 	clang++ $(FLAGS) -c ../../src/net/TcpServer.cpp
+
+Buffer.o: ../../src/net/Buffer.h ../../src/net/Buffer.cpp
+	clang++ $(FLAGS) -c ../../src/net/Buffer.cpp
 
 clean :
 	rm test01 test02 test03 test04 test05 test06 test07 test08 $(objects)

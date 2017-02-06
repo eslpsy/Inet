@@ -20,7 +20,10 @@ TcpConnection::TcpConnection(EventLoop* loop,
    localAddr_(localAddr),
    peerAddr_(peerAddr)
 {
-    channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this));
+    channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this, std::placeholders::_1));
+    channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
+    channel_->setCloseCallback(std::bind(&TcpConnection::handleClose, this));
+    channel_->setErrorCallback(std::bind(&TcpConnection::handleError, this));
 }
 
 TcpConnection::~TcpConnection()
@@ -37,9 +40,45 @@ void TcpConnection::connectEstablished()
     connectionCallback_(shared_from_this());
 }
 
-void TcpConnection::handleRead()
+void TcpConnection::connectDestroyed()
 {
-    char buf[65535];
-    ssize_t n = ::read(channel_->fd(), buf, sizeof(buf));
-    messageCallback_(shared_from_this(), buf, n);
+    loop_->assertInLoopThread();
+    assert(state_ == kConnected);
+    setState(kDisconnected);
+    channel_->disableAll();
+    connectionCallback_(shared_from_this());
+    loop_->removeChannel(get_pointer(channel_));
+}
+
+void TcpConnection::handleRead(Timestamp time)
+{
+    int saveErrno = 0;
+    ssize_t n = inputBuffer_.readFd(channel_->fd(), &saveErrno);
+    if(n > 0)
+        messageCallback_(shared_from_this(), &inputBuffer_, time);
+    else if(n == 0)
+        handleClose();
+    else
+    {
+        errno = saveErrno;
+        handleError();
+    }
+}
+
+void TcpConnection::handleClose()
+{
+    loop_->assertInLoopThread();
+    assert(state_ == kConnected);
+    channel_->disableAll();
+    closeCallback_(shared_from_this());
+}
+
+void TcpConnection::handleError()
+{
+    // Fix me
+}
+
+void TcpConnection::handleWrite()
+{
+
 }

@@ -9,6 +9,7 @@
 #include "EventLoop.h"
 #include "Timer.h"
 #include "TimerId.h"
+#include "../base/Timestamp.h"
 
 namespace inet
 {

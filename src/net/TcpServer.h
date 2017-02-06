@@ -35,6 +35,8 @@ namespace inet
             
             void newConnection(int sockfd, const InetAddress& peerAddr);
 
+            void removeConnection(const TcpConnectionPtr& conn);
+
             EventLoop* loop_;
             const std::string name_;
             boost::scoped_ptr<Acceptor> acceptor_;

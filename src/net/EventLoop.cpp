@@ -63,7 +63,7 @@ void EventLoop::loop()
         for(ChannelList::iterator iter = activeChannels_.begin();
             iter != activeChannels_.end(); ++iter)
         {
-            (*iter)->handleEvent();
+            (*iter)->handleEvent(pollReturnTime_);
         }
         doPendingFunctors();
     }
@@ -102,6 +102,13 @@ void EventLoop::updateChannel(Channel* channel)
     assert(channel->ownerLoop() == this);
     assertInLoopThread();
     poller_->updateChannel(channel);
+}
+
+void EventLoop::removeChannel(Channel* channel)
+{
+    assert(channel->ownerLoop() == this);
+    assertInLoopThread();
+    poller_->removeChannel(channel);
 }
 
 void EventLoop::runInLoop(const Functor& cb)

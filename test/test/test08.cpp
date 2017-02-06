@@ -16,9 +16,10 @@ void onConnection(const inet::TcpConnectionPtr& conn)
     }
 }
 
-void onMessage(const inet::TcpConnectionPtr& conn, const char* data, ssize_t len)
+void onMessage(const inet::TcpConnectionPtr& conn, inet::Buffer* buffer, inet::Timestamp now)
 {
-    printf("OnMessage() : received %zd bytes from connction[%s]\n", len, conn->name().c_str());
+    printf("OnMessage() : received %zd bytes from connction[%s]\n", buffer->readableBytes(), conn->name().c_str());
+    printf("OnMessage() : [%s]\n", buffer->retrieveAsString().c_str());
 }
 
 int main()

@@ -2,6 +2,7 @@
 #define __INET_CHANNEL_H
 
 #include <functional>
+#include "../base/Timestamp.h"
 #include "../base/Noncopyable.h"
 
 namespace inet
@@ -12,12 +13,15 @@ namespace inet
     {
         public:
             typedef std::function<void ()> EventCallback;
+            typedef std::function<void (Timestamp)> ReadEventCallback;
 
             Channel(EventLoop* loop, int fd);
 
-            void handleEvent();
+            ~Channel();
 
-            void setReadCallback(const EventCallback& cb)
+            void handleEvent(Timestamp time);
+
+            void setReadCallback(const ReadEventCallback& cb)
             {
                 readCallback_ = cb;
             }
@@ -30,6 +34,11 @@ namespace inet
             void setErrorCallback(const EventCallback& cb)
             {
                 errorCallback_ = cb;
+            }
+
+            void setCloseCallback(const EventCallback& cb)
+            {
+                closeCallback_ = cb;
             }
 
             int events() const
@@ -68,6 +77,12 @@ namespace inet
                 update();
             }
 
+            void disableAll()
+            {
+                events_ = kNoEvent;
+                update();
+            }
+
             EventLoop* ownerLoop()
             {
                 return loop_;
@@ -80,15 +95,17 @@ namespace inet
             static const int kReadEvent;
             static const int kWriteEvent;
 
-            EventCallback readCallback_;
+            ReadEventCallback readCallback_;
             EventCallback writeCallback_;
             EventCallback errorCallback_;
+            EventCallback closeCallback_;
 
             EventLoop* loop_;
             const int fd_;
             int events_;
             int revents_;
             int index_;
+            bool eventHandling_;
     };
 }
 
