@@ -65,12 +65,16 @@ namespace inet
                 closeCallback_ = cb;
             }
 
+            void send(const std::string& message);
+
+            void shutdown();
+
             void connectEstablished();
 
             void connectDestroyed();
 
         private:
-            enum StateE {kConnecting, kConnected, kDisconnected, };
+            enum StateE {kConnecting, kConnected, kDisconnecting, kDisconnected, };
 
             void setState(StateE s)
             {
@@ -81,6 +85,8 @@ namespace inet
             void handleWrite();
             void handleClose();
             void handleError();
+            void sendInLoop(const std::string& message);
+            void shutdownInLoop();
 
             EventLoop* loop_;
             std::string name_;
@@ -93,6 +99,7 @@ namespace inet
             MessageCallback messageCallback_;
             CloseCallback closeCallback_;
             Buffer inputBuffer_;
+            Buffer outputBuffer_;
     };
 
     typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

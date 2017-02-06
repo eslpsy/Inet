@@ -1,4 +1,4 @@
-all: test01 test02 test03 test04 test05 test06 test07 test08
+all: test01 test02 test03 test04 test05 test06 test07 test08 test09
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
@@ -29,6 +29,9 @@ test07 : $(obejcts) test07.cpp
 
 test08: $(objects) test08.cpp
 	clang++ $(objects) $(FLAGS) test08.cpp -o test08
+
+test09: $(objects) test09.cpp
+	clang++ $(objects) $(FLAGS) test09.cpp -o test09
 
 Thread.o : ../../src/base/Thread.h ../../src/base/Thread.cpp \
 	../../src/base/Noncopyable.h ../../src/base/Atomic.h ../../src/base/Thread.cpp

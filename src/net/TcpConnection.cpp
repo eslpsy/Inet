@@ -80,5 +80,93 @@ void TcpConnection::handleError()
 
 void TcpConnection::handleWrite()
 {
+    loop_->assertInLoopThread();
+    if(channel_->isWriting())
+    {
+        ssize_t n = ::write(channel_->fd(), outputBuffer_.peek(), outputBuffer_.readableBytes());
+        if(n > 0)
+        {
+            outputBuffer_.retrieve(n);
+            if(outputBuffer_.readableBytes() == 0)
+            {
+                channel_->disableWriting();
+                if(state_ == kDisconnecting)
+                    shutdownInLoop();
+            }
+            else
+            {
+                // LOG
+            }
+        }
+        else
+        {
+            // LOG
+        }
 
+    }
+    else
+    {
+        // LOG
+    }
 }
+
+void TcpConnection::shutdown()
+{
+    setState(kDisconnecting);
+    loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
+}
+
+void TcpConnection::shutdownInLoop()
+{
+    loop_->assertInLoopThread();
+    if(!channel_->isWriting())
+    {
+        socket_->shutdownWrite();
+    }
+}
+
+void TcpConnection::send(const std::string& message)
+{
+    if(state_ == kConnected)
+    {
+        if(loop_->isInLoopThread())
+            sendInLoop(message);
+        else
+            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, message));
+    }
+}
+
+void TcpConnection::sendInLoop(const std::string& message)
+{
+    loop_->assertInLoopThread();
+    ssize_t numWrite = 0;
+    if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0)
+    {
+        numWrite = ::write(socket_->fd(), message.data(), message.size());
+        printf("%zd\n", numWrite);
+        if(numWrite >= 0)
+        {
+            if(numWrite < message.size())
+            {
+                //LOG
+            }
+        }
+        else
+        {
+            numWrite = 0;
+            // LOG
+            if(errno != EWOULDBLOCK)
+                abort();
+        }
+    }
+
+    assert(numWrite >= 0);
+    if(numWrite < message.size())
+    {
+        outputBuffer_.append(message.data() + numWrite, message.size() - numWrite);
+        if(!channel_->isWriting())
+            channel_->enableWriting();
+    }
+}
+
+
