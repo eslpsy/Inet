@@ -145,7 +145,6 @@ void TcpConnection::sendInLoop(const std::string& message)
     if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0)
     {
         numWrite = ::write(socket_->fd(), message.data(), message.size());
-        printf("%zd\n", numWrite);
         if(numWrite >= 0)
         {
             if(numWrite < message.size())

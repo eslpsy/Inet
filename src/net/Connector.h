@@ -30,6 +30,8 @@ namespace inet
 
             void restart();
 
+            void stop();
+
             const InetAddress& serverAddress() const
             {
                 return serverAddr_;

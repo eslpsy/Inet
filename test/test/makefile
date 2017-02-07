@@ -1,10 +1,11 @@
-all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11
+all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
-            TcpConnection.o TcpServer.o Buffer.o EventLoopThreadPool.o Connector.o
+            TcpConnection.o TcpServer.o Buffer.o EventLoopThreadPool.o Connector.o \
+	        TcpClient.o
 
-FLAGS = -g -std=c++11 -pthread
+FLAGS = -std=c++11 -pthread
 
 test01 : $(objects) test01.cpp
 	clang++ $(objects) $(FLAGS) test01.cpp -o test01
@@ -38,6 +39,9 @@ test10: $(objects) test10.cpp
 
 test11: $(objects) test11.cpp
 	clang++ $(objects) $(FLAGS) test11.cpp -o test11
+
+test12: $(objects) test12.cpp
+	clang++ $(objects) $(FLAGS) test12.cpp -o test12
 
 Thread.o : ../../src/base/Thread.h ../../src/base/Thread.cpp \
 	../../src/base/Noncopyable.h ../../src/base/Atomic.h ../../src/base/Thread.cpp
@@ -98,5 +102,8 @@ EventLoopThreadPool.o: ../../src/net/EventLoopThreadPool.h ../../src/net/EventLo
 Connector.o : ../../src/net/Connector.h ../../src/net/Connector.cpp
 	clang++ $(FLAGS) -c ../../src/net/Connector.cpp
 
+TcpClient.o : ../../src/net/TcpClient.h ../../src/net/TcpClient.cpp
+	clang++ $(FLAGS) -c ../../src/net/TcpClient.cpp
+
 clean :
-	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11
+	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12

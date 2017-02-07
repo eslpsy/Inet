@@ -65,7 +65,7 @@ namespace inet
                 closeCallback_ = cb;
             }
 
-            void writeCompleteCallback(const WriteCompleteCallback& cb)
+            void setWriteCompleteCallback(const WriteCompleteCallback& cb)
             {
                 writeCompleteCallback_ = cb;
             }

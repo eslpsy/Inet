@@ -30,6 +30,12 @@ void Connector::start()
     loop_->runInLoop(std::bind(&Connector::startInLoop, this));
 }
 
+void Connector::stop()
+{
+    connect_ = false;
+    loop_->cancel(timerId_);
+}
+
 void Connector::startInLoop()
 {
     loop_->assertInLoopThread();
