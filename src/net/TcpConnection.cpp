@@ -90,6 +90,8 @@ void TcpConnection::handleWrite()
             if(outputBuffer_.readableBytes() == 0)
             {
                 channel_->disableWriting();
+                if(writeCompleteCallback_)
+                    loop_->runInLoop(std::bind(writeCompleteCallback_, shared_from_this()));
                 if(state_ == kDisconnecting)
                     shutdownInLoop();
             }
@@ -150,6 +152,8 @@ void TcpConnection::sendInLoop(const std::string& message)
             {
                 //LOG
             }
+            else if(writeCompleteCallback_)
+                writeCompleteCallback_(shared_from_this());
         }
         else
         {
@@ -169,4 +173,12 @@ void TcpConnection::sendInLoop(const std::string& message)
     }
 }
 
+void TcpConnection::setTcpNoDelay(bool on)
+{
+    socket_->setTcpNoDelay(on);
+}
 
+void TcpConnection::setTcpKeepAlive(bool on)
+{
+    socket_->setTcpKeepAlive(on);
+}

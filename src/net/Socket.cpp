@@ -4,6 +4,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <linux/tcp.h>
 
 using namespace inet;
 
@@ -43,4 +44,16 @@ void Socket::setReuseAddr(bool on)
 void Socket::shutdownWrite()
 {
     sockets::shutdownWrite(sockfd_);
+}
+
+void Socket::setTcpNoDelay(bool on)
+{
+    int optval = on? 1 : 0;
+    ::setsockopt(sockfd_, IPPROTO_TCP, TCP_NODELAY, &optval, sizeof(optval));
+}
+
+void Socket::setTcpKeepAlive(bool on)
+{
+    int optval = on? 1 : 0;
+    ::setsockopt(sockfd_, IPPROTO_TCP, SO_KEEPALIVE, &optval, sizeof(optval));
 }

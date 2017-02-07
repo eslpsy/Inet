@@ -11,6 +11,7 @@ namespace inet
 {
     class Acceptor;
     class EventLoop;
+    class EventLoopThreadPool;
 
     class TcpServer : Noncopyable
     {
@@ -19,6 +20,8 @@ namespace inet
             ~TcpServer();
 
             void start();
+
+            void setThreadNum(int numThreads);
 
             void setConnectionCallback(const ConnectionCallback& cb)
             {
@@ -37,9 +40,12 @@ namespace inet
 
             void removeConnection(const TcpConnectionPtr& conn);
 
+            void removeConnectionInLoop(const TcpConnectionPtr& conn);
+
             EventLoop* loop_;
             const std::string name_;
             boost::scoped_ptr<Acceptor> acceptor_;
+            boost::scoped_ptr<EventLoopThreadPool> threadPool_;
             ConnectionCallback connectionCallback_;
             MessageCallback messageCallback_;
             bool started_;

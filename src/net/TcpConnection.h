@@ -65,9 +65,18 @@ namespace inet
                 closeCallback_ = cb;
             }
 
+            void writeCompleteCallback(const WriteCompleteCallback& cb)
+            {
+                writeCompleteCallback_ = cb;
+            }
+
             void send(const std::string& message);
 
             void shutdown();
+
+            void setTcpNoDelay(bool on);
+
+            void setTcpKeepAlive(bool on);
 
             void connectEstablished();
 
@@ -98,6 +107,7 @@ namespace inet
             ConnectionCallback connectionCallback_;
             MessageCallback messageCallback_;
             CloseCallback closeCallback_;
+            WriteCompleteCallback writeCompleteCallback_;
             Buffer inputBuffer_;
             Buffer outputBuffer_;
     };

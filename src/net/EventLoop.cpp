@@ -7,6 +7,7 @@
 #include <poll.h>
 #include <stdlib.h>
 #include <sys/eventfd.h>
+#include <signal.h>
 
 using namespace inet;
 
@@ -177,3 +178,14 @@ void EventLoop::abortNotInLoopThread()
     // Log
     abort();
 }
+
+class IgnoreSigPipe
+{
+    public:
+        IgnoreSigPipe()
+        {
+            ::signal(SIGPIPE, SIG_IGN);
+        }
+};
+
+IgnoreSigPipe initObj;

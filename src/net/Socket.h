@@ -31,6 +31,10 @@ namespace inet
 
             void shutdownWrite();
 
+            void setTcpKeepAlive(bool on);
+
+            void setTcpNoDelay(bool on);
+
         private:
             const int sockfd_;
     };
