@@ -50,11 +50,19 @@ namespace inet
 
         void shutdownWrite(int sockfd);
 
+        int connect(int sockfd, const sockaddr_in& serveraddr);
+
         void toHostPort(char* buf, size_t size, const struct sockaddr_in& addr);
 
         void fromHostPort(const char* ip, uint16_t port, struct sockaddr_in* addr);
 
         struct sockaddr_in getLocalAddress(int sockfd);
+
+        struct sockaddr_in getPeerAddress(int sockfd);
+
+        int getSocketError(int sockfd); 
+
+        bool isSelfConnect(int sockfd);
     }
 }
 

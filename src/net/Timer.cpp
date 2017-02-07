@@ -2,6 +2,8 @@
 
 using namespace inet;
 
+AtomicInt64 Timer::numCreated_;
+
 void Timer::restart(Timestamp now)
 {
     if(repeat_)

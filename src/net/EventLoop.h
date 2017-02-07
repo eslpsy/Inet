@@ -35,6 +35,8 @@ namespace inet
 
             void removeChannel(Channel* channel);
 
+            void cancel(TimerId timerId);
+
             void assertInLoopThread()
             {
                 if(!isInLoopThread())

@@ -133,3 +133,36 @@ struct sockaddr_in sockets::getLocalAddress(int sockfd)
         abort();
     return localaddr;
 }
+
+struct sockaddr_in sockets::getPeerAddress(int sockfd)
+{
+    struct sockaddr_in peeraddr;
+    bzero(&peeraddr, sizeof(peeraddr));
+    socklen_t addrlen = sizeof(peeraddr);
+    if(::getpeername(sockfd, sockaddr_cast(&peeraddr), &addrlen) < 0)
+        abort();
+    return peeraddr;
+}
+
+int sockets::connect(int sockfd, const struct sockaddr_in& serveraddr)
+{
+   return ::connect(sockfd, sockaddr_cast(&serveraddr), sizeof(serveraddr));
+}
+
+int sockets::getSocketError(int sockfd)
+{
+    int optval;
+    socklen_t optlen = sizeof(optval);
+
+    if(::getsockopt(sockfd, SOL_SOCKET, SO_ERROR, &optval, &optlen) < 0)
+        return errno;
+    else
+        return optval;
+}
+
+bool sockets::isSelfConnect(int sockfd)
+{
+    struct sockaddr_in localAddr = getLocalAddress(sockfd);
+    struct sockaddr_in peerAddr = getPeerAddress(sockfd);
+    return localAddr.sin_port == peerAddr.sin_port && localAddr.sin_addr.s_addr == peerAddr.sin_addr.s_addr;
+}

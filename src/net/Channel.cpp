@@ -6,7 +6,7 @@ using namespace inet;
 
 const int Channel::kNoEvent = 0;
 const int Channel::kReadEvent = POLLIN | POLLPRI;
-const int Channel::kWriteEvent = POLLRDHUP;
+const int Channel::kWriteEvent = POLLOUT;
 
 Channel::Channel(EventLoop* loop, int fd)
 : loop_(loop), fd_(fd), events_(0), revents_(0), index_(-1)

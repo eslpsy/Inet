@@ -26,11 +26,17 @@ namespace inet
                             Timestamp when,
                             double interval);
 
+            void cancel(TimerId timerId);
+
         private:
             typedef std::pair<Timestamp, Timer*> Entry;
             typedef std::set<Entry> TimerList;
+            typedef std::pair<Timer*, int64_t> ActiveTimer;
+            typedef std::set<ActiveTimer> ActiveTimerSet;
 
             void handleRead();
+
+            void cancelInLoop(TimerId timerId);
 
             void addTimerInLoop(Timer* timer);
 
@@ -44,6 +50,9 @@ namespace inet
             const int timerfd_;
             Channel timerfdChannel_;
             TimerList timers_;
+            ActiveTimerSet activeTimers_;
+            ActiveTimerSet cancelingTimers_;
+            bool callingExpiredTimers_;
     };
 }
 

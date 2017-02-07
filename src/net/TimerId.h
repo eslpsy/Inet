@@ -7,13 +7,15 @@ namespace inet
 
     class TimerId
     {
+        friend class TimerQueue;
         public:
-            explicit TimerId(Timer* timer) : value_(timer)
+            explicit TimerId(Timer* timer = NULL, int64_t seq = 0) : timer_(timer), sequence_(seq)
             {
             }
 
         private:
-            Timer* value_;
+            Timer* timer_;
+            int64_t sequence_;
     };
 }
 
