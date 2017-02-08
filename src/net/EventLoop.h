@@ -15,7 +15,7 @@
 namespace inet
 {
     class Channel;
-    class Poller;
+    class EPoller;
     class TimerQueue;
 
     class EventLoop : Noncopyable
@@ -81,7 +81,7 @@ namespace inet
             bool callingPendingFunctors_;
             const pid_t threadId_;
             Timestamp pollReturnTime_;
-            boost::scoped_ptr<Poller> poller_;
+            boost::scoped_ptr<EPoller> poller_;
             boost::scoped_ptr<TimerQueue> timerQueue_;
             int wakeupFd_;
             boost::scoped_ptr<Channel> wakeupChannel_;

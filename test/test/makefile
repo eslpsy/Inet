@@ -3,7 +3,7 @@ all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test1
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
             TcpConnection.o TcpServer.o Buffer.o EventLoopThreadPool.o Connector.o \
-	        TcpClient.o
+	        TcpClient.o EPoller.o
 
 FLAGS = -std=c++11 -pthread
 
@@ -104,6 +104,9 @@ Connector.o : ../../src/net/Connector.h ../../src/net/Connector.cpp
 
 TcpClient.o : ../../src/net/TcpClient.h ../../src/net/TcpClient.cpp
 	clang++ $(FLAGS) -c ../../src/net/TcpClient.cpp
+
+EPoller.o : ../../src/net/EPoller.h ../../src/net/EPoller.cpp
+	clang++ $(FLAGS) -c ../../src/net/EPoller.cpp
 
 clean :
 	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12
