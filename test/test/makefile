@@ -28,7 +28,7 @@ test06 : $(objects) test06.cpp
 test07 : $(obejcts) test07.cpp
 	clang++ $(objects) $(FLAGS) test07.cpp -o test07
 
-test08: $(objects) test08.cpp
+test08: $(objects) test08.cpp ../../src/base/Daemon.h
 	clang++ $(objects) $(FLAGS) test08.cpp -o test08
 
 test09: $(objects) test09.cpp

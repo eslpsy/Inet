@@ -2,6 +2,7 @@
 #include "../../src/net/TcpServer.h"
 #include "../../src/net/EventLoop.h"
 #include "../../src/net/InetAddress.h"
+#include "../../src/base/Daemon.h"
 
 void onConnection(const inet::TcpConnectionPtr& conn)
 {
@@ -24,6 +25,7 @@ void onMessage(const inet::TcpConnectionPtr& conn, inet::Buffer* buffer, inet::T
 
 int main()
 {
+    Daemon::instance();
     inet::InetAddress listenAddr(8080);
     inet::EventLoop loop;
     inet::TcpServer server(&loop, listenAddr);

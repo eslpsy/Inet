@@ -1,5 +1,6 @@
 #include "../../src/net/EventLoop.h"
 #include "../../src/base/Thread.h"
+#include "../../src/base/Daemon.h"
 #include <stdio.h>
 
 void threadFunc()
@@ -14,6 +15,7 @@ int main()
 {
     printf("main() : pid = %d, tid = %d\n", getpid(), inet::CurrentThread::tid());
 
+    Daemon::instance();
     inet::EventLoop loop;
     inet::Thread thread(threadFunc);
     thread.start();
