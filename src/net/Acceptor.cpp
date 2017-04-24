@@ -5,13 +5,13 @@
 
 using namespace inet;
 
-Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr)
+Acceptor::Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseAddr)
  : loop_(loop),
    acceptSocket_(sockets::createNonblockOrDie()),
    acceptChannel_(loop, acceptSocket_.fd()),
    listening_(false)
 {
-    acceptSocket_.setReuseAddr(true);
+    acceptSocket_.setReuseAddr(reuseAddr);
     acceptSocket_.bindAddress(listenAddr);
     acceptChannel_.setReadCallback(std::bind(&Acceptor::handleRead, this));
 }

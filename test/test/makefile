@@ -1,9 +1,9 @@
-all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12
+all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12 test14
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
             TcpConnection.o TcpServer.o Buffer.o EventLoopThreadPool.o Connector.o \
-	        TcpClient.o EPoller.o
+	        TcpClient.o EPoller.o HttpContext.o HttpResponse.o HttpServer.o
 
 FLAGS = -std=c++11 -pthread
 
@@ -42,6 +42,9 @@ test11: $(objects) test11.cpp
 
 test12: $(objects) test12.cpp
 	clang++ $(objects) $(FLAGS) test12.cpp -o test12
+
+test14: $(objects) test14.cpp
+	clang++ $(objects) $(FLAGS) test14.cpp -o test14
 
 Thread.o : ../../src/base/Thread.h ../../src/base/Thread.cpp \
 	../../src/base/Noncopyable.h ../../src/base/Atomic.h ../../src/base/Thread.cpp
@@ -107,6 +110,15 @@ TcpClient.o : ../../src/net/TcpClient.h ../../src/net/TcpClient.cpp
 
 EPoller.o : ../../src/net/EPoller.h ../../src/net/EPoller.cpp
 	clang++ $(FLAGS) -c ../../src/net/EPoller.cpp
+
+HttpContext.o : ../../src/net/http/HttpContext.h ../../src/net/http/HttpContext.cpp
+	clang++ $(FLAGS) -c ../../src/net/http/HttpContext.cpp
+
+HttpResponse.o : ../../src/net/http/HttpResponse.h ../../src/net/http/HttpResponse.cpp
+	clang++ $(FLAGS) -c ../../src/net/http/HttpResponse.cpp
+
+HttpServer.o : ../../src/net/http/HttpServer.h ../../src/net/http/HttpServer.cpp
+	clang++ $(FLAGS) -c ../../src/net/http/HttpServer.cpp
 
 clean :
 	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12

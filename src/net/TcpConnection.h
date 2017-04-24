@@ -1,6 +1,7 @@
 #ifndef __INET_TCPCONNECTION_H
 #define __INET_TCPCONNECTION_H
 #include <boost/scoped_ptr.hpp>
+#include <boost/any.hpp>
 #include <memory>
 #include "../base/Noncopyable.h"
 #include "InetAddress.h"
@@ -49,6 +50,8 @@ namespace inet
                 return state_ == kConnected;
             }
 
+            void send(const Buffer& message);
+
             void setConnectionCallback(const ConnectionCallback& cb)
             {
                 connectionCallback_ = cb;
@@ -68,6 +71,21 @@ namespace inet
             void setWriteCompleteCallback(const WriteCompleteCallback& cb)
             {
                 writeCompleteCallback_ = cb;
+            }
+
+            void setContext(const boost::any& context)
+            {
+                context_ = context;
+            }
+
+            boost::any* getMutableContext()
+            {
+                return &context_;
+            }
+
+            const boost::any& getContext()
+            {
+                return context_;
             }
 
             void send(const std::string& message);
@@ -110,6 +128,7 @@ namespace inet
             WriteCompleteCallback writeCompleteCallback_;
             Buffer inputBuffer_;
             Buffer outputBuffer_;
+            boost::any context_;
     };
 
     typedef std::shared_ptr<TcpConnection> TcpConnectionPtr;

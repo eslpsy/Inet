@@ -127,6 +127,18 @@ void TcpConnection::shutdownInLoop()
     }
 }
 
+void TcpConnection::send(const Buffer& message)
+{
+    if(state_ == kConnected)
+    {
+        if(loop_->isInLoopThread())
+            sendInLoop(std::string(message.peek(), message.readableBytes()));
+        else
+            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, std::string
+                        (message.peek(), message.readableBytes())));
+    }
+}
+
 void TcpConnection::send(const std::string& message)
 {
     if(state_ == kConnected)

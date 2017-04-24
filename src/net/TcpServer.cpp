@@ -8,10 +8,10 @@
 
 using namespace inet;
 
-TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr)
+TcpServer::TcpServer(EventLoop* loop, const InetAddress& listenAddr, Option option)
  : loop_(loop),
    name_(listenAddr.toHostPort()),
-   acceptor_(new Acceptor(loop, listenAddr)),
+   acceptor_(new Acceptor(loop, listenAddr, option == kReusePort)),
    threadPool_(new EventLoopThreadPool(loop_)),
    started_(false),
    nextConnId_(1)

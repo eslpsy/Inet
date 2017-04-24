@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <boost/scoped_ptr.hpp>
+#include <boost/any.hpp>
 #include "../base/Noncopyable.h"
 #include "Callbacks.h"
 #include "TcpConnection.h"
@@ -16,7 +17,13 @@ namespace inet
     class TcpServer : Noncopyable
     {
         public:
-            TcpServer(EventLoop* loop, const InetAddress& listenAddr);
+            enum Option
+            {
+                kNoReusePort,
+                kReusePort,
+            };
+
+            TcpServer(EventLoop* loop, const InetAddress& listenAddr, Option option = kNoReusePort);
             ~TcpServer();
 
             void start();
@@ -31,6 +38,11 @@ namespace inet
             void setMessageCallback(const MessageCallback& cb)
             {
                 messageCallback_ = cb;
+            }
+
+            EventLoop* getLoop() const
+            {
+                return loop_;
             }
 
         private:

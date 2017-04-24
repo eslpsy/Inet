@@ -127,6 +127,12 @@ namespace inet
                 std::copy(cdata, cdata + len, begin() + readerIndex_);
             }
 
+            const char* findCRLF() const
+            {
+                const char* crlf = std::search(peek(), beginWrite(), kCRLF, kCRLF+2);
+                return crlf == beginWrite()? NULL : crlf;
+            }
+
             void shrink(size_t reserve)
             {
                 std::vector<char> buf(kCheapPrepend + readableBytes() + reserve);
@@ -166,6 +172,7 @@ namespace inet
                 }
             }
 
+            static const char kCRLF[];
             std::vector<char> buffer_;
             size_t readerIndex_;
             size_t writerIndex_;
