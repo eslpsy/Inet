@@ -112,6 +112,7 @@ namespace inet
             void handleWrite();
             void handleClose();
             void handleError();
+            void bufferSendInLoop(const Buffer& buf);
             void sendInLoop(const std::string& message);
             void shutdownInLoop();
 

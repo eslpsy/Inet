@@ -1,4 +1,4 @@
-all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12 test14
+all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12 test13 test14
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
@@ -42,6 +42,9 @@ test11: $(objects) test11.cpp
 
 test12: $(objects) test12.cpp
 	clang++ $(objects) $(FLAGS) test12.cpp -o test12
+
+test13: $(objects) test13.cpp
+	clang++ $(objects) $(FLAGS) test13.cpp -o test13
 
 test14: $(objects) test14.cpp
 	clang++ $(objects) $(FLAGS) test14.cpp -o test14
@@ -121,4 +124,4 @@ HttpServer.o : ../../src/net/http/HttpServer.h ../../src/net/http/HttpServer.cpp
 	clang++ $(FLAGS) -c ../../src/net/http/HttpServer.cpp
 
 clean :
-	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12
+	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12 ./test13 ./test14

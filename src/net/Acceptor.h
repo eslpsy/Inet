@@ -16,7 +16,7 @@ namespace inet
         public:
             typedef std::function<void (int sockfd, const InetAddress&)> NewConnectionCallback;
             
-            Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseAddr);
+            Acceptor(EventLoop* loop, const InetAddress& listenAddr, bool reuseAddr = true);
 
             void setNewConnectionCallback(const NewConnectionCallback& cb)
             {

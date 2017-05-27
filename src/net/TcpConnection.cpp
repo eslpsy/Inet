@@ -43,7 +43,7 @@ void TcpConnection::connectEstablished()
 void TcpConnection::connectDestroyed()
 {
     loop_->assertInLoopThread();
-    assert(state_ == kConnected);
+    assert(state_ == kConnected || state_ == kDisconnecting);
     setState(kDisconnected);
     channel_->disableAll();
     connectionCallback_(shared_from_this());
@@ -68,7 +68,7 @@ void TcpConnection::handleRead(Timestamp time)
 void TcpConnection::handleClose()
 {
     loop_->assertInLoopThread();
-    assert(state_ == kConnected);
+    assert(state_ == kConnected || state_ == kDisconnecting);
     channel_->disableAll();
     closeCallback_(shared_from_this());
 }
@@ -132,10 +132,9 @@ void TcpConnection::send(const Buffer& message)
     if(state_ == kConnected)
     {
         if(loop_->isInLoopThread())
-            sendInLoop(std::string(message.peek(), message.readableBytes()));
+            bufferSendInLoop(message);
         else
-            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, std::string
-                        (message.peek(), message.readableBytes())));
+            loop_->runInLoop(std::bind(&TcpConnection::bufferSendInLoop, this, message));
     }
 }
 
@@ -147,6 +146,43 @@ void TcpConnection::send(const std::string& message)
             sendInLoop(message);
         else
             loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, message));
+    }
+}
+
+void TcpConnection::bufferSendInLoop(const Buffer& buf)
+{
+    loop_->assertInLoopThread();
+    ssize_t numWrite = 0;
+    if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0)
+    {
+        numWrite = ::write(socket_->fd(), buf.peek(), buf.readableBytes());
+        if(numWrite >= 0)
+        {
+            if(numWrite < buf.readableBytes())
+            {
+                //LOG
+            }
+            else if(writeCompleteCallback_)
+            {
+                writeCompleteCallback_(shared_from_this());
+            }
+        }
+        else
+        {
+            numWrite = 0;
+            if(errno != EWOULDBLOCK)
+                abort();
+        }
+    }
+
+    assert(numWrite >= 0);
+    if(numWrite < buf.readableBytes())
+    {
+        outputBuffer_.append(buf.peek() + numWrite, buf.readableBytes() - numWrite);
+        if(!channel_->isWriting())
+        {
+            channel_->enableWriting();
+        }
     }
 }
 

@@ -30,6 +30,20 @@ Timestamp Timestamp::now()
     return Timestamp(second * kMicroSecondPerSecond + tv.tv_usec);
 }
 
+std::string Timestamp::toReadString() const
+{
+    struct tm result;
+    time_t tv;
+    char buf[128] = {0};
+
+    tv = microSecondSinceEpoch_ / kMicroSecondPerSecond;
+    localtime_r(&tv, &result);
+    snprintf(buf, sizeof(buf) - 1, "%d-%d-%d:%d.%d.%d", result.tm_year + 1900,
+            result.tm_mon + 1, result.tm_mday, result.tm_hour, result.tm_min,
+            result.tm_sec);
+    return buf;
+}
+
 Timestamp Timestamp::invalid()
 {
     return Timestamp();

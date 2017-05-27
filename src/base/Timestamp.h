@@ -25,6 +25,8 @@ namespace inet
                 return microSecondSinceEpoch_;
             }
 
+            std::string toReadString() const;
+
             std::string toString() const;
 
             static Timestamp now();

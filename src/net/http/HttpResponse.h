@@ -50,6 +50,11 @@ class HttpResponse
             addHeader("Content-Type", contentType);
         }
 
+        std::string contentType()
+        {
+            return headers_["Content-Type"];
+        }
+
         void addHeader(const std::string& key, const std::string& value)
         {
             headers_[key] = value;
@@ -61,6 +66,8 @@ class HttpResponse
         }
 
         void appendToBuffer(Buffer* output) const;
+
+        void processContentType(const std::string& path);
 
     private:
         std::map<std::string, std::string> headers_;
