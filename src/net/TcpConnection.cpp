@@ -149,6 +149,17 @@ void TcpConnection::send(const std::string& message)
     }
 }
 
+void TcpConnection::send(const char* message, ssize_t size)
+{
+    if(state_ == kConnected)
+    {
+        if(loop_->isInLoopThread())
+            charSendInLoop(message, size);
+        else
+            loop_->runInLoop(std::bind(&TcpConnection::charSendInLoop, this, message, size));
+    }
+}
+
 void TcpConnection::bufferSendInLoop(const Buffer& buf)
 {
     loop_->assertInLoopThread();
@@ -217,6 +228,40 @@ void TcpConnection::sendInLoop(const std::string& message)
         outputBuffer_.append(message.data() + numWrite, message.size() - numWrite);
         if(!channel_->isWriting())
             channel_->enableWriting();
+    }
+}
+
+void TcpConnection::charSendInLoop(const char* message, ssize_t size)
+{
+    loop_->assertInLoopThread();
+    ssize_t numWrite = 0;
+    if(!channel_->isWriting() && outputBuffer_.readableBytes() == 0)
+    {
+        numWrite = ::write(socket_->fd(), message, size);
+        if(numWrite >= 0)
+        {
+            if(numWrite < size)
+            {
+                //LOG
+            }
+            else if(writeCompleteCallback_)
+            {
+                writeCompleteCallback_(shared_from_this());
+                return;
+            }
+        }
+        else
+        {
+            numWrite = 0;
+            if(errno != EWOULDBLOCK)
+                abort();
+        }
+        if(numWrite < size)
+        {
+            outputBuffer_.append(message + numWrite, size - numWrite);
+            if(!channel_->isWriting())
+                channel_->enableWriting();
+        }
     }
 }
 

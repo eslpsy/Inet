@@ -83,12 +83,14 @@ namespace inet
                 return &context_;
             }
 
-            const boost::any& getContext()
+            const boost::any* getContext()
             {
-                return context_;
+                return &context_;
             }
 
             void send(const std::string& message);
+
+            void send(const char* message, ssize_t size);
 
             void shutdown();
 
@@ -114,6 +116,7 @@ namespace inet
             void handleError();
             void bufferSendInLoop(const Buffer& buf);
             void sendInLoop(const std::string& message);
+            void charSendInLoop(const char* message, ssize_t size);
             void shutdownInLoop();
 
             EventLoop* loop_;

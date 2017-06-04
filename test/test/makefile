@@ -1,9 +1,11 @@
-all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12 test13 test14
+all: test01 test02 test03 test04 test05 test06 test07 test08 test09 test10 test11 test12 test13 test14 \
+	test15
 
 objects = Thread.o EventLoop.o Channel.o Poller.o Timestamp.o Timer.o TimerQueue.o \
 		    EventLoopThread.o Acceptor.o Socket.o SocketsOps.o InetAddress.o \
             TcpConnection.o TcpServer.o Buffer.o EventLoopThreadPool.o Connector.o \
-	        TcpClient.o EPoller.o HttpContext.o HttpResponse.o HttpServer.o
+	        TcpClient.o EPoller.o HttpContext.o HttpResponse.o HttpServer.o \
+			ChatRoom.o
 
 FLAGS = -std=c++11 -pthread
 
@@ -48,6 +50,9 @@ test13: $(objects) test13.cpp
 
 test14: $(objects) test14.cpp
 	clang++ $(objects) $(FLAGS) test14.cpp -o test14
+
+test15: $(objects) test15.cpp
+	clang++ $(objects) $(FLAGS) test15.cpp -o test15
 
 Thread.o : ../../src/base/Thread.h ../../src/base/Thread.cpp \
 	../../src/base/Noncopyable.h ../../src/base/Atomic.h ../../src/base/Thread.cpp
@@ -123,5 +128,8 @@ HttpResponse.o : ../../src/net/http/HttpResponse.h ../../src/net/http/HttpRespon
 HttpServer.o : ../../src/net/http/HttpServer.h ../../src/net/http/HttpServer.cpp
 	clang++ $(FLAGS) -c ../../src/net/http/HttpServer.cpp
 
+ChatRoom.o : ../../src/net/ChatRoom/ChatRoom.h ../../src/net/ChatRoom/ChatRoom.cpp
+	clang++ $(FLAGS) -c ../../src/net/ChatRoom/ChatRoom.cpp
+
 clean :
-	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12 ./test13 ./test14
+	-rm $(objects) ./test01 ./test02 ./test03 ./test04 ./test05 ./test06 ./test07 ./test08 ./test09 ./test10 ./test11 ./test12 ./test13 ./test14 ./test15
